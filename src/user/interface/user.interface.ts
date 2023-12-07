@@ -1,10 +1,9 @@
 export interface UserData {
   username: string;
   email: string;
-  token: string;
-  bio: string;
+  token?: string;
   image?: string;
 }
-export interface UserOject {
+export interface UserObject {
   user: UserData;
 }

@@ -1,30 +1,21 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  BeforeInsert,
-  // JoinTable,
-  // ManyToMany,
-  // OneToMany,
-} from 'typeorm';
+import { Entity, Column, BeforeInsert } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as argon2 from 'argon2';
-// import { ArticleEntity } from '../article/article.entity';
-
+import { BaseModel } from 'src/base.enity';
 @Entity('user')
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+export class UserEntity extends BaseModel {
+  @Column({ length: 256 })
   username: string;
 
   @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
+  @Column({ unique: true })
   @IsEmail()
   email: string;
-
-  @Column({ default: '' })
-  bio: string;
 
   @Column({ default: '' })
   image: string;
@@ -32,14 +23,14 @@ export class UserEntity {
   @Column()
   password: string;
 
+  @Column({ default: false })
+  is_superuser: boolean;
+
+  @Column({ default: false })
+  is_active: boolean;
+
   @BeforeInsert()
   async hashPassword() {
     this.password = await argon2.hash(this.password);
   }
-
-  //   @ManyToMany(type => ArticleEntity)
-  //   @JoinTable()
-  //   favorites: ArticleEntity[];
-  //   @OneToMany(type => ArticleEntity, article => article.author)
-  //   articles: ArticleEntity[];
 }
