@@ -1,11 +1,8 @@
-import {
-  ClassSerializerInterceptor,
-  Injectable,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.enity';
+import { UpdateUserDto } from './dto';
 @Injectable() // đánh dấu class là Provider
 export class UserService {
   // khai báo entity constructor
@@ -14,7 +11,6 @@ export class UserService {
     private usersRepository: Repository<UserEntity>,
   ) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   async findAll(): Promise<any> {
     return this.usersRepository.find();
   }
@@ -34,6 +30,13 @@ export class UserService {
     return this.usersRepository.save(user);
   }
 
+  async updateUserById(id: number, requestBody: UpdateUserDto) {
+    const data = {
+      ...requestBody,
+      modified_at: new Date(),
+    };
+    return this.usersRepository.update(id, data);
+  }
   async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
   }
